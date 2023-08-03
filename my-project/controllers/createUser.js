@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'ASA';
 
 exports.createUser = async (req, res, next) => {
-    const email = req.body.email;
+    const { email, password, firstName, lastName } = req.body;
 
     try {
         const user = await UserModel.findOne({ email });
@@ -15,12 +15,12 @@ exports.createUser = async (req, res, next) => {
                 message: "User already exists"
             });
         } else {
-            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            const hashedPassword = await bcrypt.hash(password, 10);
 
             let newUser = new UserModel({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
                 password: hashedPassword
             });
 
@@ -32,7 +32,8 @@ exports.createUser = async (req, res, next) => {
             console.log("User successfully created");
             res.send({
                 status: 200,
-                message: "Account successfully created"
+                message: "Account successfully created",
+                token: token
             });
         }
     } catch (err) {
