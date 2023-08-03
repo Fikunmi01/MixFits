@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema({
     walletAddress: String,
     balance: String,
     imgSrc: String,
+    token:String,
     transaction: {
         transactionId: String,
         type: String,

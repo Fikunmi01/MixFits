@@ -13,7 +13,7 @@ exports.updateUser = async (req, res, next) => {
 
     try {
         const updatedUser = await UserModel.findOneAndUpdate(
-            { userId: userId },
+            { id: userId },
             updateData,
             { new: true }
         );

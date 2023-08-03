@@ -5,6 +5,7 @@ const SECRET_KEY = 'ASA';
 
 exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
+    const receivedToken = req.headers.authorization;
 
     try {
         const existingUser = await UserModel.findOne({ email });
@@ -19,16 +20,22 @@ exports.loginUser = async (req, res, next) => {
 
             if (matchPassword) {
                 console.log('User successfully logged in');
-                const token = jwt.sign(
-                    { email: existingUser.email, id: existingUser._id },
-                    SECRET_KEY,
-                    { expiresIn: '1h' }
-                );
-                res.send({
-                    status: 200,
-                    message: "User successfully logged in",
-                    token: token // Include the token in the response
-                });
+
+                try {
+                    const tokenValue = existingUser.token
+                    const decoded = jwt.verify(tokenValue, SECRET_KEY, { expiresIn: '1h' });
+                    res.send({
+                        status: 200,
+                        message: "User successfully logged in",
+                    });
+                } catch (err) {
+                    console.log("Token verification failed", err);
+                    res.send({
+                        status: 401,
+                        message: "Token verification failed"
+                    });
+                }
+
             } else {
                 res.send({
                     status: 401,

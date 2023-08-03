@@ -9,6 +9,7 @@ const url = 'mongodb://127.0.0.1:27017/mixfits'
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var adminRouter = require('./routes/admin')
 
 var app = express();
 
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -37,7 +39,7 @@ mongoose.connect(url, {
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.log(err))
 // port listen
-app.listen(5000,()=> console.log("You're connected on port 5000"))
+app.listen(5000, () => console.log("You're connected on port 5000"))
 
 // error handler
 app.use(function (err, req, res, next) {

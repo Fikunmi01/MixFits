@@ -1,32 +1,32 @@
-    const mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
 const adminSchema = mongoose.Schema({
-    adminId: Number,
-    userName: String,
+    adminId: { type: Number, unique: true },
+    username: String,
     email: String,
     password: String,
+    gender: String,
+    token: String,
     lastLogin: {
         type: Date,
         default: new Date()
     },
 })
 
-adminSchema.pre('save', function (next) {
+adminSchema.pre('save', async function (next) {
     const adminDoc = this;
-    if (adminDoc.isNew) {
-        mongoose.model('Admin', adminSchema).findOne({}, {}, { sort: { adminId: -1 } }, (err, lastAdminDoc) => {
-            if (err) {
-                return next(err);
-            }
-            const adminId = adminDoc.adminId = lastAdminDoc ? lastAdminDoc + 1 : 0;
-            console.log('Admin Id:', adminId)
-            next();
-        });
+    try {
+        const lastAdminDoc = await mongoose.model('Admin', adminSchema)
+            .findOne({}, {}, { sort: { adminId: -1 } })
+            .exec()
+        adminDoc.id = lastAdminDoc ? lastAdminDoc.id + 1 : 1;
+        console.log('Admin Id:', adminDoc.id)
 
     }
-    else {
-        next();
+    catch (err) {
+        return next(err);
     }
+
 });
 
 const AdminModel = mongoose.model('Admin', adminSchema)

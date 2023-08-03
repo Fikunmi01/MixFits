@@ -21,19 +21,18 @@ exports.createUser = async (req, res, next) => {
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
-                password: hashedPassword
+                password: hashedPassword,
             });
 
             const userPayload = newUser.toObject();
 
-            const token = jwt.sign(userPayload, SECRET_KEY, { expiresIn: '1h' });
-
+            const token = jwt.sign(userPayload, SECRET_KEY);
+            newUser.token = token
             await newUser.save();
             console.log("User successfully created");
             res.send({
                 status: 200,
                 message: "Account successfully created",
-                token: token
             });
         }
     } catch (err) {

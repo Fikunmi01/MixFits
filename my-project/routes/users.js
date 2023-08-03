@@ -11,6 +11,6 @@ router.get('/', function (req, res, next) {
 
 router.post('/create-account', createUser)
 router.post('/login', loginUser)
-router.post('/update-profile',updateUser)
+router.put('/update-profile/:id',updateUser)
 
 module.exports = router;
